@@ -1,62 +1,93 @@
 import sys
 sys.setrecursionlimit(10000)
+
+class Contacto:
+    def __init__(self, nombre, telefono):
+        self.nombre = nombre
+        self.telefono = telefono
+        self.clave = [ord(c.upper()) for c in nombre]  # Clave para ordenar (ASCII)
+
+    def __lt__(self, other):
+        return self.clave < other.clave
+
+    def __gt__(self, other):
+        return self.clave > other.clave
+
+    def __eq__(self, other):
+        return self.clave == other.clave
+
+    def __repr__(self):
+        return f"{self.nombre} -> {self.telefono}"
+
+
 class AVLNode:
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, contacto):
+        self.data = contacto
         self.left_child = None
         self.right_child = None
         self.height = 1
-
-    def __repr__(self):
-        return f'({self.data})'
 
 
 class AVLTree:
     def __init__(self):
         self.root = None
 
-    def insert(self, value):
-        self.root = self._insert(self.root, value)
+    def insert(self, contacto):
+        self.root = self._insert(self.root, contacto)
 
-    def _insert(self, node, value):
+    def _insert(self, node, contacto):
         if node is None:
-            return AVLNode(value)
+            return AVLNode(contacto)
 
-        if value < node.data:
-            node.left_child = self._insert(node.left_child, value)
-        elif value > node.data:
-            node.right_child = self._insert(node.right_child, value)
+        if contacto < node.data:
+            node.left_child = self._insert(node.left_child, contacto)
+        elif contacto > node.data:
+            node.right_child = self._insert(node.right_child, contacto)
         else:
-            return node  # No se permiten duplicados
+            return node  # Contacto duplicado
 
         node.height = 1 + max(self.get_height(node.left_child), self.get_height(node.right_child))
         balance = self.get_balance(node)
 
-        # Rotaciones
-        if balance > 1 and value < node.left_child.data:
+        if balance > 1 and contacto < node.left_child.data:
             return self.rotate_right(node)
-        if balance < -1 and value > node.right_child.data:
+        if balance < -1 and contacto > node.right_child.data:
             return self.rotate_left(node)
-        if balance > 1 and value > node.left_child.data:
+        if balance > 1 and contacto > node.left_child.data:
             node.left_child = self.rotate_left(node.left_child)
             return self.rotate_right(node)
-        if balance < -1 and value < node.right_child.data:
+        if balance < -1 and contacto < node.right_child.data:
             node.right_child = self.rotate_right(node.right_child)
             return self.rotate_left(node)
 
         return node
 
-    def delete(self, value):
-        self.root = self._delete(self.root, value)
+    def search(self, nombre):
+        clave = [ord(c.upper()) for c in nombre]
+        return self._search(self.root, clave)
 
-    def _delete(self, node, value):
+    def _search(self, node, clave):
+        if node is None:
+            return None
+        if clave == node.data.clave:
+            return node.data
+        elif clave < node.data.clave:
+            return self._search(node.left_child, clave)
+        else:
+            return self._search(node.right_child, clave)
+
+    def delete(self, nombre):
+        clave = [ord(c.upper()) for c in nombre]
+        self.root = self._delete(self.root, clave)
+
+    def _delete(self, node, clave):
         if node is None:
             return node
 
-        if value < node.data:
-            node.left_child = self._delete(node.left_child, value)
-        elif value > node.data:
-            node.right_child = self._delete(node.right_child, value)
+        if clave < node.data.clave:
+            node.left_child = self._delete(node.left_child, clave)
+        elif clave > node.data.clave:
+            node.right_child = self._delete(node.right_child, clave)
         else:
             if node.left_child is None:
                 return node.right_child
@@ -64,7 +95,7 @@ class AVLTree:
                 return node.left_child
             temp = self.get_min(node.right_child)
             node.data = temp.data
-            node.right_child = self._delete(node.right_child, temp.data)
+            node.right_child = self._delete(node.right_child, temp.data.clave)
 
         node.height = 1 + max(self.get_height(node.left_child), self.get_height(node.right_child))
         balance = self.get_balance(node)
@@ -82,18 +113,12 @@ class AVLTree:
 
         return node
 
-    def search(self, key):
-        return self._search(self.root, key)
-
-    def _search(self, node, key):
-        if node is None:
-            return False
-        if key == node.data:
-            return True
-        elif key < node.data:
-            return self._search(node.left_child, key)
+    def llamar(self, nombre):
+        contacto = self.search(nombre)
+        if contacto:
+            print(f"Llamando a {contacto.nombre}: {contacto.telefono}")
         else:
-            return self._search(node.right_child, key)
+            print("No existe el contacto.")
 
     def get_min(self, node):
         while node.left_child:
@@ -101,14 +126,10 @@ class AVLTree:
         return node
 
     def get_height(self, node):
-        if node is None:
-            return 0
-        return node.height
+        return 0 if node is None else node.height
 
     def get_balance(self, node):
-        if node is None:
-            return 0
-        return self.get_height(node.left_child) - self.get_height(node.right_child)
+        return self.get_height(node.left_child) - self.get_height(node.right_child) if node else 0
 
     def rotate_left(self, z):
         y = z.right_child
@@ -129,48 +150,11 @@ class AVLTree:
         return y
 
     def print_pretty(self):
-        if self.root:
-            lines, *_ = self._build_tree_string(self.root)
-            print("\n" + "\n".join((line.rstrip() for line in lines)))
-        else:
-            print("\nÁrbol vacío")
+        self._inorder(self.root)
 
-    def _build_tree_string(self, node):
-        if node.right_child is None and node.left_child is None:
-            line = str(node.data)
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
+    def _inorder(self, node):
+        if node:
+            self._inorder(node.left_child)
+            print(f"{node.data.nombre} -> {node.data.telefono}")
+            self._inorder(node.right_child)
 
-        if node.right_child is None:
-            lines, n, p, x = self._build_tree_string(node.left_child)
-            s = str(node.data)
-            u = len(s)
-            first_line = (x + 1) * " " + (n - x - 1) * "_" + s
-            second_line = x * " " + "/" + (n - x - 1 + u) * " "
-            shifted_lines = [line + u * " " for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
-
-        if node.left_child is None:
-            lines, n, p, x = self._build_tree_string(node.right_child)
-            s = str(node.data)
-            u = len(s)
-            first_line = s + x * "_" + (n - x) * " "
-            second_line = (u + x) * " " + "\\" + (n - x - 1) * " "
-            shifted_lines = [u * " " + line for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
-
-        left, n, p, x = self._build_tree_string(node.left_child)
-        right, m, q, y = self._build_tree_string(node.right_child)
-        s = str(node.data)
-        u = len(s)
-        first_line = (x + 1) * " " + (n - x - 1) * "_" + s + y * "_" + (m - y) * " "
-        second_line = x * " " + "/" + (n - x - 1 + u + y) * " " + "\\" + (m - y - 1) * " "
-        if p < q:
-            left += [n * " "] * (q - p)
-        elif q < p:
-            right += [m * " "] * (p - q)
-        zipped_lines = zip(left, right)
-        lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
-        return lines, n + m + u, max(p, q) + 2, n + u // 2
