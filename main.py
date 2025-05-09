@@ -1,46 +1,46 @@
-from AVL_tree import AVLTree
-
+from AVL_tree import AVLTree, Contacto
 
 def menu_de_contactos():
-    tree=AVLTree()
+    tree = AVLTree()
 
     while True:
-        print("\n--- ADMINISTRADOR DE CONTACTOS (solo teléfonos) ---")
-        print("1. Agregar número")
-        print("2. Buscar número")
-        print("3. Eliminar número")
-        print("4. Mostrar árbol AVL")
-        print("5. Salir")
-        opcion = int (input("Elige una opción: "))
+        print("\n--- ADMINISTRADOR DE CONTACTOS ---")
+        print("1. Agregar contacto")
+        print("2. Buscar contacto")
+        print("3. Eliminar contacto")
+        print("4. Llamar a contacto")
+        print("5. Mostrar contactos (ordenados)")
+        print("6. Salir")
+        opcion = input("Elige una opción: ")
 
-        if opcion==1:
-            try:
-                numero_telefono = int (input("Ingresa el numero de telefono aa gregar: "))
-                tree.insert(numero_telefono)
-                print("numero de telefono agregado")
-            except ValueError:
-                print("Número inválido.")
-            
-        elif opcion==2: 
-            try:
-                num = int(input("Número de teléfono a buscar: "))
-                encontrado = tree.search(num)
-                print("Número encontrado." if encontrado else "Número no encontrado.")
-            except ValueError:
-                print("Número inválido.")
+        if opcion == '1':
+            nombre = input("Nombre del contacto: ")
+            telefono = input("Número de teléfono: ")
+            tree.insert(Contacto(nombre, telefono))
+            print("Contacto agregado.")
 
-        if opcion==3:
-            try:
-                num = int(input("Número de teléfono a eliminar: "))
-                tree.delete(num)
-                print("Número eliminado.")
-            except ValueError:
-                print("Número inválido.")
+        elif opcion == '2':
+            nombre = input("Nombre a buscar: ")
+            encontrado = tree.search(nombre)
+            print(f"{encontrado.nombre} -> {encontrado.telefono}" if encontrado else "No encontrado.")
 
-        elif opcion==4:
+        elif opcion == '3':
+            nombre = input("Nombre del contacto a eliminar: ")
+            tree.delete(nombre)
+            print("Contacto eliminado (si existía).")
+
+        elif opcion == '4':
+            nombre = input("¿A quién quieres llamar?: ")
+            tree.llamar(nombre)
+
+        elif opcion == '5':
+            print("Lista de contactos:")
             tree.print_pretty()
 
-        elif opcion == 5:
-            print("Saliendo del administrador de contactos.")
-            break     
+        elif opcion == '6':
+            print("Saliendo del programa.")
+            break
+
+        else:
+            print("Opción no válida.")   
         
