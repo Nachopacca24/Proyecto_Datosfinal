@@ -39,22 +39,30 @@ python3 primitivo.py
 (solo permite 5 contactos máximo)
 
 Dificultades encontradas en la versión primitiva
-- La versión alterna (en primitivo.py) usa una simple lista para almacenar los contactos. Esto trae varias limitaciones y complicaciones importantes:
-  - Limitación de tamaño: Solo permite hasta 5 contactos. Esto impide escalar el programa para un uso realista.
-  - Ineficiencia en búsquedas y eliminaciones:
-  - Las búsquedas recorren la lista entera (tiempo O(n)) en lugar de O(log n) como el AVL.
-  - Lo mismo ocurre para eliminar contactos, lo que afecta el rendimiento conforme crece la lista.
+La versión primitiva del programa (primitivo.py) implementa la gestión de contactos usando únicamente variables y estructura condicional, sin listas, diccionarios ni clases. Esto trae consigo varias limitaciones y complicaciones importantes:
+  - Capacidad limitada y fija:
+    - Solo permite hasta 5 contactos, definidos manualmente con variables como nombre1, telefono1, ..., nombre5, telefono5.
+    - Esta limitación impide que el sistema escale o se adapte a un número variable de entradas.
+    - 
+  - Gestión manual de contactos:
+    - Cada operación (insertar, buscar, eliminar) depende de condiciones múltiples y repetidas para cada variable.
+    - El código se vuelve extenso y propenso a errores, especialmente al aumentar el número de contactos.
+    - 
+  - Ineficiencia en operaciones:
+    - Las búsquedas y eliminaciones requieren revisar cada variable por separado, lo cual simula un recorrido lineal con complejidad O(n).
+    - No hay ningún tipo de optimización como la que ofrecería un árbol AVL (O(log n)).
 
   - Falta de orden automático:
-    - No hay ordenamiento de contactos al insertarlos.
-    - No se puede mostrar la lista alfabéticamente a menos que se ordene manualmente.
+    - Los contactos se almacenan en el orden en que fueron agregados, sin un sistema de ordenamiento alfabético.
+    - No se puede mostrar la lista en orden sin agregar lógica manual para comparar nombres uno por uno.
 
-  - Duplicación no controlada:
-    - Permite insertar contactos con el mismo nombre sin restricción.
+  - No se controla la duplicación:
+    - No existe verificación para evitar múltiples contactos con el mismo nombre.
+    - Esto puede generar confusión o sobrescritura accidental de datos.
 
-  - Ausencia de estructura formal:
-    - No se usa orientación a objetos ni claves organizadas.
-    - Esto vuelve el código más difícil de extender, mantener y escalar.
+  - Ausencia total de estructura formal:
+    - No se usa programación orientada a objetos, ni estructuras dinámicas.
+    - El diseño rígido lo vuelve difícil de mantener, extender y escalar.
 
 
 Por qué usar un árbol AVL?
