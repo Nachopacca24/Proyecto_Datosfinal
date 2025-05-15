@@ -81,6 +81,33 @@ Información adicional:
 
 
 Archivos:
+- AVL_tree.py:
+  - Contiene la implementación de un árbol AVL para manejar una agenda de contactos.
+  - Define las clases:
+    - Contacto: Almacena nombre, teléfono y genera una clave basada en ASCII para ordenamiento.
+    - AVLNode: Nodo del árbol AVL que almacena un contacto y sus hijos izquierdo/derecho.
+    - AVLTree: Implementación completa del árbol AVL con métodos para:
+      - Insertar (insert), buscar (search), eliminar (delete) contactos.
+      - Rotaciones (rotate_left, rotate_right) para mantener el balanceo.
+      - Funciones auxiliares como get_height, get_balance, get_min.
+      - Operaciones adicionales como llamar (simular llamada) y print_pretty (mostrar contactos ordenados).
+
+- main.py:
+- Implementa un menú interactivo para gestionar contactos usando el AVLTree.
+  - Funciones:
+    - menu_de_contactos: Menú principal con opciones para:
+    - Agregar, buscar, eliminar, llamar y mostrar contactos.
+    - Usa la clase AVLTree y Contacto importadas desde AVL_tree.py.
+
+- primitivo.py:
+- Implementación básica de una agenda de contactos sin estructuras de datos avanzadas.
+- Usa variables globales (nombre1, telefono1, etc.) para almacenar hasta 5 contactos.
+  - Funciones:
+  - insertar, buscar, eliminar, imprimir_contactos.
+
+- menu: Menú interactivo similar al de main.py, pero con lógica rudimentaria.
+  - run.py:
+  - Punto de entrada del programa. Simplemente importa y ejecuta menu_de_contactos() desde main.py.
 
 - [__pycache__](https://github.com/Nachopacca24/Proyecto_Datosfinal/tree/master/__pycache__)
 - [AVL_tree.py](https://github.com/Nachopacca24/Proyecto_Datosfinal/blob/master/AVL_tree.py)
